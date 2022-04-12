@@ -1,27 +1,25 @@
-################################################################################
-#
-#
-#
-#       acquire.py
-#
-#       Description: description
-#
-#       Variables:
-#
-#           datasets
-#
-#       Functions:
-#
-#           get_data(url, endpoint, name, show_output)
-#           get_items(show_output = True)
-#           get_stores(show_output = True)
-#           get_sales(show_output = True)
-#           load_data(name, use_cache = True, cache_data = True, show_output = True)
-#           combine_data(sales, items, stores)
-#           get_open_power_systems_data()
-#
-#
-################################################################################
+'''
+
+    acquire.py
+
+    Description: Data acquisition code for acquiring the sales, stores, and items
+        data from api.data.codeup.com.
+
+    Variables:
+
+        datasets
+
+    Functions:
+
+        get_data(url, endpoint, name, show_output)
+        get_items(show_output = True)
+        get_stores(show_output = True)
+        get_sales(show_output = True)
+        load_data(name, use_cache = True, cache_data = True, show_output = True)
+        combine_data(sales, items, stores)
+        get_open_power_systems_data()
+
+'''
 
 import os
 import requests
@@ -56,17 +54,14 @@ def get_data(url: str, endpoint: str, name: str, show_output: bool = True) -> pd
 
     data = pd.DataFrame()
     
-    while True:
-        if show_output: print(f'Reading page {endpoint}', end = '\r')
-
+    while endpoint:
         contents = requests.get(url + endpoint).json()
+        if show_output: print(f"Reading page {contents['payload']['page']} of {contents['payload']['max_page']}.", end = '\r')
+
         page_contents = pd.DataFrame(contents['payload'][name])
         data = pd.concat([data, page_contents])
-        
-        if not (next_page := contents['payload']['next_page']):
-            break
             
-        endpoint = next_page
+        endpoint = contents['payload']['next_page']
         
     data = data.reset_index().drop(columns = 'index')
     if show_output: print('Loading complete. Returning data.')
@@ -146,7 +141,7 @@ datasets = {
     },
     'sales' : {
         'file' : 'sales.csv',
-        'functions' : get_sales
+        'function' : get_sales
     }
 }
 
