@@ -11,6 +11,7 @@
 
     Functions:
 
+        get_store_sales_data()
         get_data(url, endpoint, name, show_output)
         get_items(show_output = True)
         get_stores(show_output = True)
@@ -21,11 +22,28 @@
 
 '''
 
+################################################################################
+
 import os
 import requests
 import pandas as pd
 
 ################################################################################
+
+def get_store_sales_data() -> pd.DataFrame:
+    '''
+        Return the combined sales, items, and stores datasets.
+    
+        Returns
+        -------
+        DataFrame: The combined sales, items, and stores datasets.
+    '''
+
+    return combine_data(
+        load_data('sales'),
+        load_data('items'),
+        load_data('stores')
+    )
 
 def get_data(url: str, endpoint: str, name: str, show_output: bool = True) -> pd.DataFrame:
     '''
