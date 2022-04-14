@@ -47,7 +47,7 @@ def set_date_to_index(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.copy()
     df.sale_date = df.sale_date.apply(lambda date: date[ : -13])
-    df.sale_date = pd.to_datetime(df.sale_date)
+    df.sale_date = pd.to_datetime(df.sale_date, format='%a, %d %b %Y')
     df = df.set_index('sale_date').sort_index()
     return df
 
